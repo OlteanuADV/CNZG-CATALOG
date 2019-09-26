@@ -27,7 +27,7 @@ Pe parcurs probabil vor mai aparea:
 <h3>Cerinte Sistem</h3>
 Necesita o conexiune de internet stabila.
 <hr/>
-<h3>Realizator</h3>
+<h3>Realizator: Olteanu Cristian</h3>
 <ul>
 <li>Scoala: Colegiul National Zinca Golescu</li>
 <li>Clasa: 12</li>
