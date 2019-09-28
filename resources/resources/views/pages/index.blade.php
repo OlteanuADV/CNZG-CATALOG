@@ -1,7 +1,7 @@
 @extends('template')
 @section('content')
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 mb-2">
         <div class="card bg-primary text-white card-body border-0 rounded-0">
             <div class="row">
                 <div class="col-md-3">
@@ -14,7 +14,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mb-2">
         <div class="card bg-warning text-white card-body border-0 rounded-0">
             <div class="row">
                 <div class="col-md-3">
@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mb-2">
         <div class="card bg-danger text-white card-body border-0 rounded-0">
             <div class="row">
                 <div class="col-md-3">

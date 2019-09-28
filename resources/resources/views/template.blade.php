@@ -18,16 +18,16 @@
 <body class="" style="background-color:#e9ecef;">
 
     <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">{{config('app.name')}}</a>
+      <a class="navbar-brand" href="{{URL::to('/')}}">{{config('app.name')}}</a>
       <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
+          <!--<li class="nav-item">
             <a class="nav-link" href="{{URL::to('/')}}"><i class="fa fa-home"></i> Acasa</a>
-          </li>
+          </li>-->
         </ul>
         <ul class="navbar-nav ml-auto">
         @if(!Auth::check())
@@ -35,9 +35,18 @@
                 <a class="nav-link" href="{{URL::to('/login')}}"><i class="fa fa-sign-in-alt"></i> Login</a>
             </li>
         @else
-            <li class="nav-item">
+            <!--<li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="notificariDrop" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-bell text-danger"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificariDrop">
+               minile sus
+              </div>
+            </li>-->
+            <li class="nav-item dropdown">
                 @php date_default_timezone_set('Europe/Bucharest'); @endphp
-                <a class="nav-link" href="{{URL::to('/profile/'.Auth::user()->ID)}}">Buna 
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Buna 
                     <?php 
                     if(date('H') < 6 || date('H') >= 20)
                     echo 'seara';
@@ -45,7 +54,13 @@
                     echo 'dimineata';
                     else
                         echo 'ziua';
-                    ?>, {{Auth::user()->LastName}} </a>
+                    ?>, {{Auth::user()->LastName}} 
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{URL::to('/profile/'.Auth::user()->ID)}}">Profil</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{{url::to('/logout')}}">Deconectare</a>
+                </div>
             </li>
         @endif
         </ul>
@@ -54,11 +69,15 @@
     <div class="nav-scroller bg-white box-shadow">
       <nav class="nav nav-underline">
         <a class="nav-link active" href="{{URL::to('/')}}">Acasa</a>
-        <a class="nav-link" href="#">
-          Friends
-          <span class="badge badge-pill bg-light align-text-bottom">27</span>
+        @if(Auth::check() && Auth::user()->Class !== 0)
+        <a class="nav-link" href="{{Url::to('/classes/my')}}">
+          Clasa mea
+          <span class="badge badge-pill bg-light align-text-bottom">{{App\User::where('Class',Auth::user()->Class)->where('InSchoolFunction',0)->count()}}</span>
         </a>
-        <a class="nav-link" href="#">Explore</a>
+        @endif
+        @if(Auth::check() && Auth::user()->InSchoolFunction !== 0)
+          <a class="nav-link" href="{{URL::to('/classes/mine')}}">Clasele mele</a>
+        @endif
         <a class="nav-link" href="#">Suggestions</a>
         <a class="nav-link" href="#">Link</a>
         <a class="nav-link" href="#">Link</a>
@@ -69,11 +88,22 @@
     </div>
     <main role="main" class="container">
         <br>
-        <div id="app">
+        <div id=>
+            @if(session('success'))
+            <div class="alert alert-success" role="alert">
+              {{session('success')}}
+            </div>
+            @endif
+            @if(session('danger'))
+            <div class="alert alert-danger" role="alert">
+              {{session('danger')}}
+            </div>
+            @endif
             @yield('content')
         </div>
     </main>
 </body>
+<script src="//cdn.ckeditor.com/4.13.0/standard/ckeditor.js"></script>
 <script>
 $(function () {
   'use strict'

@@ -52,22 +52,26 @@
                         <hr>
                         <select id="materii_select" class="form-control" @change="updateNoteList()"></select>
                         <br><br>
-                        <table class="table">
-                            <thead class="thead-dark">
-                                <tr>
-                                <th scope="col">Nr.</th>
-                                <th scope="col">Nota</th>
-                                <th scope="col">Data</th>
-                                </tr>
-                            </thead>
-                            <tbody id="note">
-
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                    <th scope="col">Nr.</th>
+                                    <th scope="col">Nota</th>
+                                    <th scope="col">Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="note">
+    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="pills-absente" role="tabpanel" aria-labelledby="pills-absente-tab">
                         <hr>
-                        todo
+                        @foreach($absente as $abs)
+                        Absenta @if($abs->Motivated == 0)<b class="text-danger">nemotivata</b>@else <b class="text-success">motivata</b> @endif in data de {{ date('Y-m-d', strtotime($abs->AbsenceDate))}}, la @foreach($materii as $mat) @if($mat->ID == $abs->Subject) {{$mat->Name}} @endif @endforeach.<br>
+                        @endforeach
                     </div>
                 </div>
                 @endif

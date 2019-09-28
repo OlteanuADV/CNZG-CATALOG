@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Auth, DB, App\User, Cache, Session, Carbon, App\General, App\Classes;
+use Auth, DB, App\User, Cache, Session, Carbon, App\General, App\Classes, App\Absences;
 
 
 class Pages extends Controller
@@ -34,6 +34,7 @@ class Pages extends Controller
             $diriginte          = User::where('Class',$user->Class)->where('InSchoolFunction', '1')->first();
             $profesori          = Classes::getTeachers($user->Class);
             $materii            = Classes::getSubjects($user->Class);
+            $absente            = Absences::where('StudentID',$user->ID)->get();
         }
         else
         {
@@ -41,9 +42,26 @@ class Pages extends Controller
             $diriginte          = 0;
             $profesori          = 0;
             $materii            = 0;
+            $absente            = 0;
         }
         return view('pages.profile')
         ->with('user',                  $user)
+        ->with('class',                 $class)
+        ->with('diriginte',             $diriginte)
+        ->with('profesori',             $profesori)
+        ->with('materii',               $materii)
+        ->with('absente',               $absente);
+    }
+
+    public function myClass(){
+        $user               = Auth::user();
+        $students           = User::where('Class', $user->Class)->where('InSchoolFunction',0)->orderBy('LastName','ASC')->get();
+        $class              = Classes::find($user->Class);
+        $diriginte          = User::where('Class',$user->Class)->where('InSchoolFunction', '1')->first();
+        $profesori          = Classes::getTeachers($user->Class);
+        $materii            = Classes::getSubjects($user->Class);
+        return view('pages.myclass')
+        ->with('students',              $students)
         ->with('class',                 $class)
         ->with('diriginte',             $diriginte)
         ->with('profesori',             $profesori)
