@@ -10,4 +10,12 @@ class Grades extends Model
     protected $primaryKey = 'ID';
     protected $fillable = ['StudentID', 'Value','Date','PostedBy'];
     public $timestamps = false;
+
+    public function user() {
+        return $this->belongsTo('App\User', 'ID', 'StudentID');
+    }
+
+    public function posted(){
+        return $this->belongsTo('App\User', 'ID', 'PostedBy');
+    }
 }

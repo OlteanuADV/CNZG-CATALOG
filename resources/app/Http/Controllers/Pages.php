@@ -30,11 +30,11 @@ class Pages extends Controller
             return redirect('/')->with('danger','This user doesn`t exists!');
         if($user->Class !== 0)
         {
-            $class              = Classes::find($user->Class);
+            $class              = $user->class()->first();
             $diriginte          = User::where('Class',$user->Class)->where('InSchoolFunction', '1')->first();
             $profesori          = Classes::getTeachers($user->Class);
             $materii            = Classes::getSubjects($user->Class);
-            $absente            = Absences::where('StudentID',$user->ID)->get();
+            $absente            = $user->absences()->orderBy('AbsenceDate','desc')->get();
         }
         else
         {
@@ -56,10 +56,11 @@ class Pages extends Controller
     public function myClass(){
         $user               = Auth::user();
         $students           = User::where('Class', $user->Class)->where('InSchoolFunction',0)->orderBy('LastName','ASC')->get();
-        $class              = Classes::find($user->Class);
+        $class              = $user->class()->first();
         $diriginte          = User::where('Class',$user->Class)->where('InSchoolFunction', '1')->first();
         $profesori          = Classes::getTeachers($user->Class);
         $materii            = Classes::getSubjects($user->Class);
+        
         return view('pages.myclass')
         ->with('students',              $students)
         ->with('class',                 $class)
@@ -67,4 +68,5 @@ class Pages extends Controller
         ->with('profesori',             $profesori)
         ->with('materii',               $materii);
     }
+
 }

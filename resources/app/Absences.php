@@ -11,5 +11,11 @@ class Absences extends Model
     protected $fillable = ['StudentID', 'AbsenceDate', 'Subject', 'PostedBy', 'Motivated'];
     public $timestamps = false;
 
+    public function user() {
+        return $this->belongsTo('App\User', 'ID', 'StudentID');
+    }
 
+    public function posted(){
+        return $this->belongsTo('App\User', 'ID', 'PostedBy');
+    }
 }

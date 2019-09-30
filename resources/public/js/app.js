@@ -15226,6 +15226,111 @@ var app = new Vue({
       }
 
       return updateNoteList;
+    }(),
+    postNewGrade: function () {
+      var _postNewGrade = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return axios({
+                  url: _PAGE_URL + '/api/postNewGrade',
+                  method: 'post',
+                  data: {
+                    _token: _token,
+                    materie: master_subjects.value,
+                    nota: new_grade.value,
+                    data: new_date.value,
+                    user_id: user_id.value
+                  }
+                });
+
+              case 2:
+                data = _context3.sent;
+                data = data.data;
+
+                if (!(data.success == 1)) {
+                  _context3.next = 9;
+                  break;
+                }
+
+                this.Swal('success', data.message, 'Congrats!');
+                return _context3.abrupt("return", setTimeout(function () {
+                  document.location = document.location;
+                }, 1500));
+
+              case 9:
+                return _context3.abrupt("return", this.Swal('error', data.message, 'Oops...'));
+
+              case 10:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function postNewGrade() {
+        return _postNewGrade.apply(this, arguments);
+      }
+
+      return postNewGrade;
+    }(),
+    postNewAbs: function () {
+      var _postNewAbs = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return axios({
+                  url: _PAGE_URL + '/api/postNewAbs',
+                  method: 'post',
+                  data: {
+                    _token: _token,
+                    materie: master_subjects_abs.value,
+                    data: new_date_abs.value,
+                    user_id: user_id.value
+                  }
+                });
+
+              case 2:
+                data = _context4.sent;
+                data = data.data;
+
+                if (!(data.success == 1)) {
+                  _context4.next = 9;
+                  break;
+                }
+
+                this.Swal('success', data.message, 'Congrats!');
+                return _context4.abrupt("return", setTimeout(function () {
+                  document.location = document.location;
+                }, 1500));
+
+              case 9:
+                return _context4.abrupt("return", this.Swal('error', data.message, 'Oops...'));
+
+              case 10:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function postNewAbs() {
+        return _postNewAbs.apply(this, arguments);
+      }
+
+      return postNewAbs;
     }()
   }
 });

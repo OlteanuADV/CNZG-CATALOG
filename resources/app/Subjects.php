@@ -11,4 +11,7 @@ class Subjects extends Model
     protected $fillable = ['Number', 'Character'];
     public $timestamps = false;
 
+    public function user() {
+        return $this->belongsTo('App\User', 'ID', 'ID');
+    }
 }

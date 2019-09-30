@@ -60,6 +60,57 @@ const app = new Vue({
                 notelemele = notelemele + `<tr><td>${i+1}</td><td>${note[i].Value}</td><td>${note[i].Date}</td></tr>`;
             }
             $('#note').html(notelemele);
+        },
+        postNewGrade: async function(){
+            let data = await axios({
+                url: _PAGE_URL + '/api/postNewGrade',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    materie: master_subjects.value,
+                    nota: new_grade.value,
+                    data: new_date.value,
+                    user_id: user_id.value
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+
+                this.Swal('success',data.message,'Congrats!');
+                return setTimeout(function(){
+                    document.location = document.location;
+                }, 1500);
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            }
+        },
+        postNewAbs: async function(){
+            let data = await axios({
+                url: _PAGE_URL + '/api/postNewAbs',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    materie: master_subjects_abs.value,
+                    data: new_date_abs.value,
+                    user_id: user_id.value
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+
+                this.Swal('success',data.message,'Congrats!');
+                return setTimeout(function(){
+                    document.location = document.location;
+                }, 1500);
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            } 
         }
     }
 });

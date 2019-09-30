@@ -14,8 +14,11 @@ Route::get('/logout',function(){
 
 Route::prefix('/api')->group(function(){
     Route::get('/getGrades/{userid}/{materie}','Requests@getGrades')->middleware('auth');
+    Route::post('/postNewGrade','Requests@postNewGrade')->middleware('auth');
+    Route::post('/postNewAbs', 'Requests@postNewAbs')->middleware('auth');
 });
 
 Route::prefix('/classes')->group(function(){
     Route::get('/my', 'Pages@myClass')->middleware('auth');
+    Route::get('/mine','Pages@mineClasses')->middleware('auth');
 });

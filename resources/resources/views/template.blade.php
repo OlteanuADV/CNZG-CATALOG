@@ -35,14 +35,18 @@
                 <a class="nav-link" href="{{URL::to('/login')}}"><i class="fa fa-sign-in-alt"></i> Login</a>
             </li>
         @else
-            <!--<li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="notificariDrop" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="{{URL::to('/inbox')}}">
+                @php
+                $nedeschis = Auth::user()->notifications()->where('UserID',Auth::user()->ID)->where('Read',0)->count();
+                @endphp
+                @if($nedeschis == 0)
+                <i class="fa fa-bell text-white"></i>
+                @else
                 <i class="fa fa-bell text-danger"></i>
+                @endif
               </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificariDrop">
-               minile sus
-              </div>
-            </li>-->
+            </li>
             <li class="nav-item dropdown">
                 @php date_default_timezone_set('Europe/Bucharest'); @endphp
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -88,7 +92,7 @@
     </div>
     <main role="main" class="container">
         <br>
-        <div id=>
+        <div id="app">
             @if(session('success'))
             <div class="alert alert-success" role="alert">
               {{session('success')}}
@@ -100,6 +104,7 @@
             </div>
             @endif
             @yield('content')
+            <br>
         </div>
     </main>
 </body>
