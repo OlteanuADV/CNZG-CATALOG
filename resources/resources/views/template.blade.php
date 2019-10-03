@@ -74,7 +74,7 @@
       <nav class="nav nav-underline">
         <a class="nav-link active" href="{{URL::to('/')}}">Acasa</a>
         @if(Auth::check() && Auth::user()->Class !== 0)
-        <a class="nav-link" href="{{Url::to('/classes/my')}}">
+        <a class="nav-link" href="{{Url::to('/classes/'.Auth::user()->Class)}}">
           Clasa mea
           <span class="badge badge-pill bg-light align-text-bottom">{{App\User::where('Class',Auth::user()->Class)->where('InSchoolFunction',0)->count()}}</span>
         </a>

@@ -30,5 +30,10 @@ class Classes extends Model
         return $subjects;
     }
 
+    public function users(){
+        return $this->hasMany('App\User', 'Class', 'ID');
+    }
+
+    
     
 }

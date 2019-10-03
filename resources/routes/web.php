@@ -4,6 +4,8 @@ Route::get('/','Pages@showIndex');
 Route::get('/home','Pages@showIndex');
 Route::get('/login','Pages@showLogin')->middleware('guest')->name('login');
 Route::post('/login', 'Requests@postLogin')->middleware('guest');
+Route::get('/inbox', 'Pages@showInbox')->middleware('auth');
+
 
 Route::get('/profile/{id}','Pages@showProfile')->middleware('auth');
 
@@ -19,6 +21,6 @@ Route::prefix('/api')->group(function(){
 });
 
 Route::prefix('/classes')->group(function(){
-    Route::get('/my', 'Pages@myClass')->middleware('auth');
     Route::get('/mine','Pages@mineClasses')->middleware('auth');
+    Route::get('/{id}', 'Pages@myClass')->middleware('auth');
 });
