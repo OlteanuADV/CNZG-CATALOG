@@ -82,7 +82,7 @@
         @if(Auth::check() && Auth::user()->InSchoolFunction !== 0)
           <a class="nav-link" href="{{URL::to('/classes/mine')}}">Clasele mele</a>
         @endif
-        <a class="nav-link" href="#">Suggestions</a>
+        <a class="nav-link" href="{{URL::to('/classes/all')}}">Toate clasele</a>
         <a class="nav-link" href="#">Link</a>
         <a class="nav-link" href="#">Link</a>
         <a class="nav-link" href="#">Link</a>

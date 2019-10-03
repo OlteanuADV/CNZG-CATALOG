@@ -21,6 +21,7 @@ Route::prefix('/api')->group(function(){
 });
 
 Route::prefix('/classes')->group(function(){
+    Route::get('/all','Pages@showAllClasses')->middleware('auth');
     Route::get('/mine','Pages@mineClasses')->middleware('auth');
     Route::get('/{id}', 'Pages@myClass')->middleware('auth');
 });

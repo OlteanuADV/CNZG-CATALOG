@@ -123,6 +123,6 @@ class Pages extends Controller
             }
             return $data;
         });
-        return view('pages.classes')->with('classes', $classes);
+        return view('pages.mineclasses')->with('classes', $classes);
     }
 }
