@@ -115,7 +115,7 @@ class Pages extends Controller
     }
 
     public function showAllClasses(){
-        $data = Cache::remember('showAllClasses', 3600, function(){
+        $classes = Cache::remember('showAllClasses', 3600, function(){
             $data = Classes::all();
             foreach($data as $clas){
                 $clas->diriginte = $class->users()->where('InSchoolFunction', 1)->first();
@@ -123,5 +123,6 @@ class Pages extends Controller
             }
             return $data;
         });
+        return view('pages.classes')->with('classes', $classes);
     }
 }
