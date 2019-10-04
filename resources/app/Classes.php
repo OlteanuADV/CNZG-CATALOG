@@ -34,6 +34,9 @@ class Classes extends Model
         return $this->hasMany('App\User', 'Class', 'ID');
     }
 
+    public function chief(){
+        return $this->hasOne('App\User', 'ID', 'Chief')->first();
+    }
     
     
 }

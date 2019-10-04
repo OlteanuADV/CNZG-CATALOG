@@ -109,4 +109,47 @@ class Requests extends Controller
         return json_encode(['success' => 0,'message'=>'Nu poti face acest lucru!']);
         
     }
+
+    public function choseMyChief(Request $req){
+        $req->validate([
+            'sefulclasei' => 'required'
+        ]);
+
+        $chief = $req->input('sefulclasei');
+        
+        if(Auth::user()->InSchoolFunction == 0)
+            return json_encode(['success' => 0,'message'=>'Nu poti face acest lucru!']);
+        
+        $actual_chief = Auth::user()->class()->first()->Chief;
+
+        if($chief == $actual_chief)
+            return json_encode(['success' => 0,'message'=> 'Nu poti alege aceelasi sef!']);
+        
+        $chief_user = User::find($chief);
+        if(Auth::user()->Class !== $chief_user->Class)
+            return json_encode(['success' => 0,'message'=> 'Nu poti alege un sef care nu este in clasa dumneavoastra.!']);
+
+        $clas = Auth::user()->class()->first();
+        $clas->Chief = $chief;
+        $clas->save();
+        Notifications::addNotif($chief_user->ID, 'Dirigintele '.Auth::user()->LastName.' '.Auth::user()->FirstName.' tocmai te-a numit noul sef al clasei din care faci parte!');
+        return json_encode(['success' => 1,'message'=> 'L-ati numit pe '.$chief_user->LastName.' '.$chief_user->FirstName.' noul sef al clasei!']);
+    }
+    public function buzzMyClass(Request $req){
+        $req->validate([
+            'mesajclasa' => 'required'
+        ]);
+
+        $msj = $req->input('mesajclasa');
+        if(Auth::user()->InSchoolFunction == 0)
+            return json_encode(['success' => 0,'message'=>'Nu poti face acest lucru!']);
+        
+        $class_users = User::where('Class',Auth::user()->Class)->where('InSchoolFunction', 0)->get();
+        $text = General::olt_purify($msj);
+        foreach($class_users as $us) {
+            Notifications::addNotif($us->ID, '"'.$text.'", trimis de catre dirigintele '.Auth::user()->LastName.' '.Auth::user()->FirstName.'!');
+        }
+        return json_encode(['success' => 1,'message'=> 'Mesajul a fost trimis tuturor elevilor din clasa!']);
+    }
+
 }

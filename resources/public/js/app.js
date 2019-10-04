@@ -15331,6 +15331,106 @@ var app = new Vue({
       }
 
       return postNewAbs;
+    }(),
+    choseMyChief: function () {
+      var _choseMyChief = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+        var data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios({
+                  url: _PAGE_URL + '/api/choseMyChief',
+                  method: 'post',
+                  data: {
+                    _token: _token,
+                    sefulclasei: sefulclasei.value
+                  }
+                });
+
+              case 2:
+                data = _context5.sent;
+                data = data.data;
+
+                if (!(data.success == 1)) {
+                  _context5.next = 9;
+                  break;
+                }
+
+                this.Swal('success', data.message, 'Congrats!');
+                return _context5.abrupt("return", setTimeout(function () {
+                  document.location = document.location;
+                }, 1500));
+
+              case 9:
+                return _context5.abrupt("return", this.Swal('error', data.message, 'Oops...'));
+
+              case 10:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function choseMyChief() {
+        return _choseMyChief.apply(this, arguments);
+      }
+
+      return choseMyChief;
+    }(),
+    buzzMyClass: function () {
+      var _buzzMyClass = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        var data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return axios({
+                  url: _PAGE_URL + '/api/buzzMyClass',
+                  method: 'post',
+                  data: {
+                    _token: _token,
+                    mesajclasa: mesajclasa.value
+                  }
+                });
+
+              case 2:
+                data = _context6.sent;
+                data = data.data;
+
+                if (!(data.success == 1)) {
+                  _context6.next = 9;
+                  break;
+                }
+
+                this.Swal('success', data.message, 'Congrats!');
+                return _context6.abrupt("return", setTimeout(function () {
+                  document.location = document.location;
+                }, 1500));
+
+              case 9:
+                return _context6.abrupt("return", this.Swal('error', data.message, 'Oops...'));
+
+              case 10:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+
+      function buzzMyClass() {
+        return _buzzMyClass.apply(this, arguments);
+      }
+
+      return buzzMyClass;
     }()
   }
 });

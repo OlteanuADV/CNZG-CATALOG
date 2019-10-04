@@ -87,7 +87,7 @@ const app = new Vue({
                 return this.Swal('error', data.message ,'Oops...');
             }
         },
-        postNewAbs: async function(){
+        postNewAbs: async function() {
             let data = await axios({
                 url: _PAGE_URL + '/api/postNewAbs',
                 method: 'post',
@@ -111,6 +111,52 @@ const app = new Vue({
             else {
                 return this.Swal('error', data.message ,'Oops...');
             } 
-        }
+        },
+        choseMyChief: async function() {
+            let data = await axios({
+                url: _PAGE_URL + '/api/choseMyChief',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    sefulclasei: sefulclasei.value
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+
+                this.Swal('success',data.message,'Congrats!');
+                return setTimeout(function(){
+                    document.location = document.location;
+                }, 1500);
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            } 
+        },
+        buzzMyClass: async function() {
+            let data = await axios({
+                url: _PAGE_URL + '/api/buzzMyClass',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    mesajclasa: mesajclasa.value
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+
+                this.Swal('success',data.message,'Congrats!');
+                return setTimeout(function(){
+                    document.location = document.location;
+                }, 1500);
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            } 
+        },
     }
 });

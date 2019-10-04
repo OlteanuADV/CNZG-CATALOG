@@ -18,6 +18,9 @@ Route::prefix('/api')->group(function(){
     Route::get('/getGrades/{userid}/{materie}','Requests@getGrades')->middleware('auth');
     Route::post('/postNewGrade','Requests@postNewGrade')->middleware('auth');
     Route::post('/postNewAbs', 'Requests@postNewAbs')->middleware('auth');
+    Route::post('/choseMyChief', 'Requests@choseMyChief')->middleware('auth');
+    Route::post('/buzzMyClass', 'Requests@buzzMyClass')->middleware('auth');
+    //buzzMyClass
 });
 
 Route::prefix('/classes')->group(function(){
