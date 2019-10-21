@@ -66,44 +66,43 @@
         <div class="card">
             <div class="card-header">Panou Administrativ al elevului {{$user->LastName}} {{$user->FirstName}}</div>
             <div class="card-body">
-                @if(Auth::user()->InSchoolFunction > 1 || Auth::user()->Class == $user->Class)
+                @if(Auth::user()->InSchoolFunction > 1 || (Auth::user()->InSchoolFunction > 0 && Auth::user()->Class == $user->Class))
 
-                <label for="master_subjects">Selecteaza materia la care doriti sa ii oferiti nota.</label>
-                <select name="master_subjects" id="master_subjects" class="form-control">
-                    <option>None</option>
-                </select>
-                <label for="new_grade">Introduceti nota.</label>
-                <input type="number" class="form-control" name="new_grade" id="new_grade">
-                <label for="new_date">Introduceti data notei.</label>
-                <input type="date" class="form-control" name="new_date" id="new_date" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
-                <br>
-                <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewGrade()">Adauga-i nota!</button>
+                    <label for="master_subjects">Selecteaza materia la care doriti sa ii oferiti nota.</label>
+                    <select name="master_subjects" id="master_subjects" class="form-control">
+                        <option>None</option>
+                    </select>
+                    <label for="new_grade">Introduceti nota.</label>
+                    <input type="number" class="form-control" name="new_grade" id="new_grade">
+                    <label for="new_date">Introduceti data notei.</label>
+                    <input type="date" class="form-control" name="new_date" id="new_date" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
+                    <br>
+                    <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewGrade()">Adauga-i nota!</button>
 
-                <hr>
-                <label for="master_subjects">Selecteaza materia la care doriti sa ii oferiti absenta.</label>
-                <select name="master_subjects_abs" id="master_subjects_abs" class="form-control">
-                    <option>None</option>
-                </select>
-                <label for="new_date_abs">Introduceti data notei.</label>
-                <input type="date" class="form-control" name="new_date_abs" id="new_date_abs" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
-                <br>
-                <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewAbs()">Adauga-i absenta nemotivata!</button>
+                    <hr>
+                    <label for="master_subjects">Selecteaza materia la care doriti sa ii oferiti absenta.</label>
+                    <select name="master_subjects_abs" id="master_subjects_abs" class="form-control">
+                        <option>None</option>
+                    </select>
+                    <label for="new_date_abs">Introduceti data notei.</label>
+                    <input type="date" class="form-control" name="new_date_abs" id="new_date_abs" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
+                    <br>
+                    <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewAbs()">Adauga-i absenta nemotivata!</button>
                 @else
+                    <input type="hidden" id="master_subjects" name="master_subjects" value="{{Auth::user()->Subject}}">
+                    <label for="new_grade">Introduceti nota.</label>
+                    <input type="number" class="form-control" name="new_grade" id="new_grade">
+                    <label for="new_date">Introduceti data notei.</label>
+                    <input type="date" class="form-control" name="new_date" id="new_date" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
+                    <br>
+                    <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewGrade()">Adauga-i nota!</button>
 
-                <input type="hidden" id="master_subjects" name="master_subjects" value="{{Auth::user()->Subject}}">
-                <label for="new_grade">Introduceti nota.</label>
-                <input type="number" class="form-control" name="new_grade" id="new_grade">
-                <label for="new_date">Introduceti data notei.</label>
-                <input type="date" class="form-control" name="new_date" id="new_date" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
-                <br>
-                <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewGrade()">Adauga-i nota!</button>
-
-                <hr>
-                <input type="hidden" id="master_subjects_abs" name="master_subjects_abs" value="{{Auth::user()->Subject}}">
-                <label for="new_date_abs">Introduceti data notei.</label>
-                <input type="date" class="form-control" name="new_date_abs" id="new_date_abs" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
-                <br>
-                <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewAbs()">Adauga-i absenta nemotivata!</button>
+                    <hr>
+                    <input type="hidden" id="master_subjects_abs" name="master_subjects_abs" value="{{Auth::user()->Subject}}">
+                    <label for="new_date_abs">Introduceti data notei.</label>
+                    <input type="date" class="form-control" name="new_date_abs" id="new_date_abs" value="{{date('Y-m-d')}}" max="{{date('Y-m-d')}}">
+                    <br>
+                    <button  class="btn btn-info border-0 rounded-0" style="width:100%" @click="postNewAbs()">Adauga-i absenta nemotivata!</button>
                 @endif
                 
             </div>
@@ -125,6 +124,7 @@
                 <div class="tab-content" id="pills-tabContent">
                     <div class="tab-pane fade show active" id="pills-note" role="tabpanel" aria-labelledby="pills-note-tab">
                         <hr>
+                        <label for="materii_select" id="materii_select_label" class="text-center text-danger"></label>
                         <select id="materii_select" class="form-control" @change="updateNoteList()"></select>
                         <br><br>
                         <div class="table-responsive">
@@ -137,7 +137,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="note">
-    
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -145,7 +145,15 @@
                     <div class="tab-pane fade" id="pills-absente" role="tabpanel" aria-labelledby="pills-absente-tab">
                         <hr>
                         @foreach($absente as $abs)
-                        Absenta @if($abs->Motivated == 0)<b class="text-danger">nemotivata</b>@else <b class="text-success">motivata</b> @endif in data de {{ date('Y-m-d', strtotime($abs->AbsenceDate))}}, la @foreach($materii as $mat) @if($mat->ID == $abs->Subject) {{$mat->Name}} @endif @endforeach.<br>
+                        Absenta @if($abs->Motivated == 0)<b class="text-danger">nemotivata</b>@else <b class="text-success">motivata</b> @endif in data de {{ date('Y-m-d', strtotime($abs->AbsenceDate))}}, la @foreach($materii as $mat) @if($mat->ID == $abs->Subject) {{$mat->Name}} @endif @endforeach.
+                        @if(Auth::user()->InSchoolFunction > 1 || Auth::user()->Class == $user->Class)
+                            @if($abs->Motivated == 0)
+                            <a @click="motivateAbsence({{$abs->ID}})" data-toggle="tooltip" title="Motivati aceasta absenta."><i class="fa fa-check text-success"></i></a>
+                            @else
+                            <a @click="demotivateAbsence({{$abs->ID}})" data-toggle="tooltip" title="Demotivati aceasta absenta."><i class="fa fa-times text-danger"></i></a>
+                            @endif
+                        @endif
+                        <br> 
                         @endforeach
                     </div>
                 </div>

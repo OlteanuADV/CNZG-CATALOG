@@ -1,13 +1,87 @@
-window.Vue = require('vue');
-window.axios = require('axios');
-//Vue.component('login', require('./components/login.vue').default);
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import App from './components/App'
+import Index from './components/Index'
+import Login from './components/Login'
+import Inbox from './components/Inbox'
+import MyClass from './components/MyClass'
 
+
+Vue.component('pagination', require('laravel-vue-pagination'));
+Vue.use(VueRouter)
+window.axios = require('axios');
+
+
+//Router
+const router = new VueRouter({
+    mode: 'history',
+    base: '/catalogznk/',
+    routes: [
+        {
+            path: '/',
+            name: 'Index',
+            component: Index
+        },
+        {
+            path: '/login',
+            name: 'Login',
+            component: Login
+        },
+        {
+            path: '/inbox',
+            name: 'Inbox',
+            component: Inbox,
+        },
+        {
+            path: '/classes/all',
+            name: 'AllClasses',
+            component: Index,
+        },
+        {
+            path: '/classes/mine',
+            name: 'MineClasses',
+            component: Index,
+        },
+        {
+            path: '/class/:id',
+            name: 'MyClass',
+            component: MyClass,
+        },
+    ],
+});
+//End Router
+
+Vue.prototype.Auth = window.Auth;
+Vue.prototype.Swal = function(type, text, title){
+    Swal.fire({
+        type: type,
+        title: title,
+        text: text,
+    });
+}
 const app = new Vue({
     el: '#app',
+    components: {
+        'app': App
+    },
+    router,
+    created(){
+        //this.fetchUser();
+    },
     mounted(){
-        console.log('montat');
+        
     },
     methods: {
+        fetchUser: async function(){
+            let data = await axios({
+                url: _PAGE_URL + '/api/fetchUser',
+                method: 'get',
+            });
+            data = data.data;
+            console.log(data);
+            Vue.prototype.Auth = data;
+            this.Auth = data;
+        },
         Swal(type, text, title){
             Swal.fire({
                 type: type,
@@ -23,7 +97,7 @@ const app = new Vue({
             if(password.value.length == 0)
                 return this.Swal('error','Introdu parola!','Oops...');
             let data = await axios({
-                url: _PAGE_URL + 'login',
+                url: _PAGE_URL + '/api/login',
                 method: 'post',
                 data: {
                     _token: _token,
@@ -56,8 +130,15 @@ const app = new Vue({
             });
             let note = data.data;
             let notelemele = '';
+            let sum = 0;
             for(let i = 0; i < note.length; i++){
                 notelemele = notelemele + `<tr><td>${i+1}</td><td>${note[i].Value}</td><td>${note[i].Date}</td></tr>`;
+                sum = sum + note[i].Value;
+            }
+            if(note.length > 0)
+            {
+                let avg = sum / note.length;
+                $('#materii_select_label').html(`In prezent media acestui elev este <b>${avg}</b>.`);
             }
             $('#note').html(notelemele);
         },
@@ -158,5 +239,64 @@ const app = new Vue({
                 return this.Swal('error', data.message ,'Oops...');
             } 
         },
+        motivateAbsence: async function(id){
+            let data = await axios({
+                url: _PAGE_URL + '/api/motivateAbsence',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    id: id
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+                this.Swal('success',data.message,'Congrats!');
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            }
+        },
+        demotivateAbsence: async function(id){
+            let data = await axios({
+                url: _PAGE_URL + '/api/demotivateAbsence',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    id: id
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+                this.Swal('success',data.message,'Congrats!');
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            }
+        },
+        addNewStudent: async function(){
+            let data = await axios({
+                url: _PAGE_URL + '/api/addNewStudent',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    newLastN: newLastN.value,
+                    newFirstN: newFirstN.value,
+                    newEmail: newEmail.value,
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+                this.Swal('success',data.message,'Congrats!');
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            }
+        }
     }
 });

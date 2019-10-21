@@ -3,10 +3,51 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Auth, DB, App\User, Cache, Session, Carbon, App\General, App\Subjects, App\Absences, App\Grades, App\Notifications;
+use Auth, DB, App\User, Cache, Session, Carbon, App\General, App\Subjects, App\Absences, App\Grades, App\Notifications, App\Classes;
 
 class Requests extends Controller
 {
+    public function fetchMyClass($id){
+        $class = Classes::find($id);
+        $class->chief = $class->chief();
+        if(!$class)
+            return redirect('/')->with('danger','Aceasta clasa nu exista!');
+        
+        $data = Cache::remember('myclass_'.$id, 1800, function()  use ($class) {
+            $data['students']           = $class->users()->where('InSchoolFunction',0)->orderBy('LastName','ASC')->get();
+            $data['diriginte']          = $class->users()->where('InSchoolFunction',1)->first();
+            $data['profesori']          = Classes::getTeachers($class->ID);
+            $data['materii']            = Classes::getSubjects($class->ID);
+            return (object) $data;
+        });
+        return json_encode(['students' => $data->students,'class'=> $class, 'diriginte' => $data->diriginte, 'profesori' => $data->profesori, 'materii' => $data->materii]);
+    }
+
+    public function fetchInbox() {
+        $notifications = Auth::user()->notifications()->orderBy('ID','desc')->paginate(10);
+        Notifications::where('UserID', Auth::user()->ID)->where('Read', 0)->update([
+            'Read'=>1
+        ]);
+        return json_encode($notifications);
+    }
+    public function fetchIndex(){
+        $data = Cache::remember('showIndex', 1800, function(){
+            $data['total_students']         = User::where('InSchoolFunction','0')->count();
+            $data['total_teachers']         = User::where('InSchoolFunction','>','0')->count();
+            $data['total_classes']          = Classes::count();
+            $data['school']                 = General::getSchoolInfo();
+            return (object) $data;
+        });
+        return json_encode($data);
+    }
+    public function fetchUser(){
+        if(!Auth::check())
+            return json_encode(['Auth' => ['check' => false]]);
+        else{
+            return json_encode(['Auth' => ['checked' => true, 'user' => Auth::user()]]);
+        }
+    }
+
     public function postLogin(Request $r){
         $r->validate([
             'password' => 'required',
@@ -69,6 +110,7 @@ class Requests extends Controller
 
             $numemat = Subjects::find($materie)->Nume;
             Notifications::addNotif($user->ID, 'Profesorul '.Auth::user()->LastName.' '.Auth::user()->FirstName.' ti-a adaugat nota '.$nota.' la materia '.$numemat.'!');
+            Cache::forget('showProfile_'.$user->ID);
             return json_encode(['success' => 1,'message'=>'I-ati adaugat elevului nota '.$nota.' la materia '.$numemat.'!']);
         }
         else
@@ -104,6 +146,7 @@ class Requests extends Controller
 
             $numemat = Subjects::find($materie)->Nume;
             Notifications::addNotif($user->ID, 'Profesorul '.Auth::user()->LastName.' '.Auth::user()->FirstName.' ti-a adaugat o absenta nemotivata in data de '.$data.' la materia '.$numemat.'!');
+            Cache::forget('showProfile_'.$user->ID);
             return json_encode(['success' => 1,'message'=> 'I-ati adaugat elevului o absenta nemotivata in data de  '.$data.' la materia '.$numemat.'!']);
         } else
         return json_encode(['success' => 0,'message'=>'Nu poti face acest lucru!']);
@@ -150,6 +193,75 @@ class Requests extends Controller
             Notifications::addNotif($us->ID, '"'.$text.'", trimis de catre dirigintele '.Auth::user()->LastName.' '.Auth::user()->FirstName.'!');
         }
         return json_encode(['success' => 1,'message'=> 'Mesajul a fost trimis tuturor elevilor din clasa!']);
+    }
+
+
+    public function motivateAbsence(Request $req) {
+        $req->validate([
+            'id' => 'required'
+        ]);
+        
+        $id = $req->input('id');
+        $absenta = Absences::find($id);
+        if(Auth::user()->InSchoolFunction == 0)
+            return json_encode(['success' => 0,'message'=>'Nu poti face acest lucru!']);
+        if(!$absenta)
+            return json_encode(['success' => 0,'message'=>'Absenta nu exista.']);
+
+        if(Auth::user()->InSchoolFunction > 1 || (Auth::user()->InSchoolFunction > 0 && Auth::user()->Class == $absenta->user->Class)){
+            $absenta->Motivated = 1;
+            $absenta->save();
+            Notifications::addNotif($absenta->user->ID, 'Dirigintele '.Auth::user()->LastName.' '.Auth::user()->FirstName.' ti-a motivat o absenta in data de '.$absenta->AbsenceDate.'!');
+            Cache::forget('showProfile_'.$absenta->user->ID);
+            return json_encode(['success' => 1,'message'=> 'Absenta motivata cu succes!']);
+        }
+    }
+
+    public function demotivateAbsence(Request $req) {
+        $req->validate([
+            'id' => 'required'
+        ]);
+        
+        $id = $req->input('id');
+        $absenta = Absences::find($id);
+        if(Auth::user()->InSchoolFunction == 0)
+            return json_encode(['success' => 0,'message'=>'Nu poti face acest lucru!']);
+        if(!$absenta)
+            return json_encode(['success' => 0,'message'=>'Absenta nu exista.']);
+
+        if(Auth::user()->InSchoolFunction > 1 || (Auth::user()->InSchoolFunction > 0 && Auth::user()->Class == $absenta->user->Class)) {
+            $absenta->Motivated = 0;
+            $absenta->save();
+            Notifications::addNotif($absenta->user->ID, 'Dirigintele '.Auth::user()->LastName.' '.Auth::user()->FirstName.' ti-a demotivat o absenta in data de '.$absenta->AbsenceDate.'!');
+            Cache::forget('showProfile_'.$absenta->user->ID);
+            return json_encode(['success' => 1,'message'=> 'Absenta demotivata cu succes!']);
+        }
+    }
+
+    public function addNewStudent(Request $req){
+        $req->validate([
+            'newLastN' => 'required',
+            'newFirstN' => 'required',
+            'newEmail' => 'required'
+        ]);
+        if(Auth::user()->InSchoolFunction == 0)
+            return json_encode(['success' => 0,'message'=>'Nu poti face acest lucru!']);
+        $LastN = $req->input('newLastN');
+        $FirstN = $req->input('newFirstN');
+        $Email = $req->input('newEmail');
+
+        $user = new User;
+        $user->LastName = General::olt_purify($LastN);
+        $user->FirstName = General::olt_purify($FirstN);
+        $user->Email = General::olt_purify($Email);
+        $string = General::randString(8);
+        $user->Password = $string;
+        $user->InSchoolFunction = 0;
+        $user->Class = Auth::user()->Class;
+        $user->Subject = 0;
+        $user->save();
+        Cache::forget('myclass_'.Auth::user()->Class);
+        return json_encode(['success' => 1,'message'=> 'Elev adaugat!Parola acestuia este '.$string.'!']);
     }
 
 }
