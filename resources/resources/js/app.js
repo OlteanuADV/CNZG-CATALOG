@@ -5,7 +5,9 @@ import Index from './components/Index'
 import Login from './components/Login'
 import Inbox from './components/Inbox'
 import MyClass from './components/MyClass'
-
+import AllClasses from './components/AllClasses'
+import MineClasses from './components/MineClasses'
+import Profile from './components/Profile'
 
 Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.use(VueRouter)
@@ -35,17 +37,22 @@ const router = new VueRouter({
         {
             path: '/classes/all',
             name: 'AllClasses',
-            component: Index,
+            component: AllClasses,
         },
         {
             path: '/classes/mine',
             name: 'MineClasses',
-            component: Index,
+            component: MineClasses,
         },
         {
             path: '/class/:id',
             name: 'MyClass',
             component: MyClass,
+        },
+        {
+            path: '/profile/:id',
+            name: 'Profile',
+            component: Profile,
         },
     ],
 });

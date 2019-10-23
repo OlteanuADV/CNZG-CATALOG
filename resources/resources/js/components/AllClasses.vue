@@ -1,0 +1,70 @@
+<template>
+  <div>
+    <div class="row" v-if="loaded">
+        <div class="col-md-12">
+            <h5 class="text-center">Toate clasele.</h5>
+            <div class="card">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="bg-dark text-white">
+                            <th>Nr.</th>
+                            <th>Nume clasa</th>
+                            <th>Diriginte</th>
+                            <th>Nr. Elevi</th>
+                    </thead>
+                    <tbody>
+                        <tr  v-for="(cla, index) in classes">
+                            <td>
+                                {{ index+1 }}
+                            </td>
+                            <td>
+                                <router-link :to="{ path: '/class/' + cla.ID }">{{cla.Number}} {{cla.Character}}</router-link>
+                            </td>
+                            <td>
+                                <router-link :to="{ path: '/profile/' + cla.diriginte.ID }">{{cla.diriginte.LastName}} {{cla.diriginte.FirstName}}</router-link>
+                            </td>
+                            <td>
+                                {{cla.users.length}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+    data(){
+        return{
+            loaded: false,
+            classes: [],
+        }
+    },
+    created(){
+        this.fetchAllClasses();
+    },
+    mounted() {
+        
+    },
+    methods: {
+        isChief: function(id){
+            if(id == cla.Chief)
+                return true;
+            else return false;
+        },
+        fetchAllClasses: async function() {
+            let data = await axios({
+                url: _PAGE_URL + '/api/fetchAllClasses/',
+                method: 'get',
+            });
+            data = data.data;
+            this.classes = data;
+            this.loaded = true;
+            console.log(data);
+        },
+    },
+};
+</script>

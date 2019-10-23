@@ -2,6 +2,7 @@
   <div>
     <div class="row" v-if="loaded">
         <div class="col-md-12">
+            <h5 class="text-center">Clasa mea.</h5>
             <div class="card">
                 <div class="card-header text-center">
                     Clasa a {{ this.class.Number}}-a {{this.class.Character}} (Diriginte {{this.diriginte.LastName}} {{this.diriginte.FirstName}})
@@ -18,7 +19,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(s, index) in students">
-                                    <td>{{ index }}</td>
+                                    <td>{{ index+1 }}</td>
                                     <td>
                                         {{s.LastName}} {{s.FirstName}}
                                         <div v-if="isChief(s.ID)" class="badge badge-danger" data-toggle="tooltip" title="Seful clasei."><i class="fa fa-user-secret"></i> Seful clasei</div>
@@ -91,7 +92,7 @@ export default {
                 return true;
             else return false;
         },
-        fetchMyClass: async function(page = 1) {
+        fetchMyClass: async function() {
             let data = await axios({
                 url: _PAGE_URL + '/api/fetchMyClass/' + this.$route.params.id,
                 method: 'get',
@@ -104,6 +105,68 @@ export default {
             this.students = data.students;
             this.loaded = true;
             console.log(data);
+        },
+        choseMyChief: async function() {
+            let data = await axios({
+                url: _PAGE_URL + '/api/choseMyChief',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    sefulclasei: sefulclasei.value
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+
+                this.Swal('success',data.message,'Congrats!');
+                this.fetchMyClass();
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            } 
+        },
+        buzzMyClass: async function() {
+            let data = await axios({
+                url: _PAGE_URL + '/api/buzzMyClass',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    mesajclasa: mesajclasa.value
+                }
+            });
+            data = data.data;
+
+            if(data.success == 1)
+            {
+
+                this.Swal('success',data.message,'Congrats!');
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            } 
+        },
+         addNewStudent: async function(){
+            let data = await axios({
+                url: _PAGE_URL + '/api/addNewStudent',
+                method: 'post',
+                data: {
+                    _token: _token,
+                    newLastN: newLastN.value,
+                    newFirstN: newFirstN.value,
+                    newEmail: newEmail.value,
+                }
+            });
+            data = data.data;
+            this.fetchMyClass();
+            if(data.success == 1)
+            {
+                this.Swal('success',data.message,'Congrats!');
+            }
+            else {
+                return this.Swal('error', data.message ,'Oops...');
+            }
         }
     },
 };

@@ -7,6 +7,43 @@ use Auth, DB, App\User, Cache, Session, Carbon, App\General, App\Subjects, App\A
 
 class Requests extends Controller
 {
+    public function fetchMineClasses(){
+        if(Auth::user()->InSchoolFunction == 0)
+            return redirect('/')->with('danger','Din pacate nu ai acces la aceasta pagina!');
+        
+        $claseles            = Cache::remember('mineclasses_'.Auth::user()->ID, 3600, function() {
+            $classes            = Classes::all();
+            $myclass            = [];
+
+            foreach($classes as $class){
+                $asd        = Classes::getTeachers($class->ID);
+                foreach($asd as $teach)
+                {
+                    if(Auth::user() == $teach)
+                    {
+                        $class->users        = $class->users()->where('InSchoolFunction', 0)->get();
+                        $class->diriginte    = $class->users()->where('InSchoolFunction', 1)->first();
+                        array_push($myclass, $class);
+                    }
+                }
+            }
+            return $myclass;
+        });
+        return $claseles;
+    }
+
+    public function fetchAllClasses(){
+        $classes = Cache::remember('showAllClasses', 3600, function(){
+            $data = Classes::all();
+            foreach($data as $clas){
+                $clas->diriginte = $clas->users()->where('InSchoolFunction', 1)->first();
+                $clas->users = $clas->users()->where('InSchoolFunction', 0)->get();
+            }
+            return $data;
+        });
+        return json_encode($classes);
+    }
+
     public function fetchMyClass($id){
         $class = Classes::find($id);
         $class->chief = $class->chief();
@@ -30,6 +67,7 @@ class Requests extends Controller
         ]);
         return json_encode($notifications);
     }
+
     public function fetchIndex(){
         $data = Cache::remember('showIndex', 1800, function(){
             $data['total_students']         = User::where('InSchoolFunction','0')->count();
@@ -40,6 +78,7 @@ class Requests extends Controller
         });
         return json_encode($data);
     }
+
     public function fetchUser(){
         if(!Auth::check())
             return json_encode(['Auth' => ['check' => false]]);
@@ -47,7 +86,7 @@ class Requests extends Controller
             return json_encode(['Auth' => ['checked' => true, 'user' => Auth::user()]]);
         }
     }
-
+//post fgunctions
     public function postLogin(Request $r){
         $r->validate([
             'password' => 'required',

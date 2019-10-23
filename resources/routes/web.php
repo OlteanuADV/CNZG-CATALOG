@@ -23,11 +23,16 @@ Route::prefix('/classes')->group(function(){
 
 
 Route::prefix('/api')->group(function(){
-    Route::post('/login', 'Requests@postLogin')->middleware('guest');
+    
     Route::get('/fetchUser', 'Requests@fetchUser');
+    Route::get('/fetchAllClasses', 'Requests@fetchAllClasses');
     Route::get('/fetchInbox', 'Requests@fetchInbox');
     Route::get('/fetchMyClass/{id}', 'Requests@fetchMyClass');
     Route::get('/fetchIndex', 'Requests@fetchIndex');
+    Route::get('/fetchMineClasses','Requests@fetchMineClasses')->middleware('auth');
+
+    
+    Route::post('/login', 'Requests@postLogin')->middleware('guest');
     Route::get('/getGrades/{userid}/{materie}','Requests@getGrades')->middleware('auth');
     Route::post('/postNewGrade','Requests@postNewGrade')->middleware('auth');
     Route::post('/postNewAbs', 'Requests@postNewAbs')->middleware('auth');
