@@ -2,13 +2,14 @@
 Acest catalog a fost inceput pe data de 26.09.2019.<br>
 <hr/>
 <h3>Descriere</h3>
-va urma
+
 <hr/>
 <h3>Tehnologii</h3>
 Pentru actuala versiune am folosit:
 <ul>
 <li>Laravel 6.0</li>
 <li>VueJS 2.6.10</li>
+<li>Vue Router 3.1.3</li>
 <li>Bootstrap 4</li>
 <li>Axios</li>
 <li>jQuery</li>
@@ -39,5 +40,6 @@ Necesita o conexiune de internet stabila.
 <img src="https://i.imgur.com/3DzX0vG.png"><br>
 <img src="https://i.imgur.com/lJft4yI.png"><br>
 <img src="https://i.imgur.com/ABuVTM3.png">
-
-
+<hr/>
+<small>Update LOG<br>
+ Toata partea front-end foloseste acum vue-js, iar rutele au fost si ele trecute pe vue-router, pentru o mai buna experienta a utilizatorilor cu site-ul.</small>
