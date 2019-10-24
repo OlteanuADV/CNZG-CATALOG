@@ -56,6 +56,7 @@
                   Buna <?php  if(date('H') < 6 || date('H') >= 20) echo 'seara'; elseif(date('H') >= 6 && date('H') <= 11) echo 'dimineata';else echo 'ziua';?>, {{Auth::user()->LastName}} 
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                  <!--<router-link class="dropdown-item" :to="{ path: '/profile/' + {{Auth::user()->ID}} }">Profil</router-link>-->
                   <a class="dropdown-item" href="{{URL::to('/profile/'.Auth::user()->ID)}}">Profil</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{url::to('/logout')}}">Deconectare</a>

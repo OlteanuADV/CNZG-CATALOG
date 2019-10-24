@@ -9,17 +9,17 @@ Route::get('/inbox', 'Pages@showInbox')->middleware('auth');
 
 Route::get('/profile/{id}','Pages@showProfile')->middleware('auth');
 
-Route::get('/logout',function(){
-    Auth::logout();
-    return redirect('/')->with('success','Deconectare cu succes.');
-})->middleware('auth');
+
 Route::prefix('/classes')->group(function(){
     Route::get('/all','Pages@showAllClasses')->middleware('auth');
     Route::get('/mine','Pages@mineClasses')->middleware('auth');
     Route::get('/{id}', 'Pages@myClass')->middleware('auth');
 });
 */
-
+Route::get('/logout',function(){
+    Auth::logout();
+    return redirect('/')->with('success','Deconectare cu succes.');
+})->middleware('auth');
 
 
 Route::prefix('/api')->group(function(){
@@ -30,7 +30,7 @@ Route::prefix('/api')->group(function(){
     Route::get('/fetchMyClass/{id}', 'Requests@fetchMyClass');
     Route::get('/fetchIndex', 'Requests@fetchIndex');
     Route::get('/fetchMineClasses','Requests@fetchMineClasses')->middleware('auth');
-
+    Route::get('/fetchProfile/{id}', 'Requests@fetchProfile');
     
     Route::post('/login', 'Requests@postLogin')->middleware('guest');
     Route::get('/getGrades/{userid}/{materie}','Requests@getGrades')->middleware('auth');
@@ -43,4 +43,4 @@ Route::prefix('/api')->group(function(){
     Route::post('/addNewStudent', 'Requests@addNewStudent')->middleware('auth');
 });
 
-Route::get('/{any}','Pages@spaControll')->where('any', '^(?!api).*$');
+Route::get('/{any}','Pages@spaControll')->where('any', '^(?!api).*$')->where('any', '^(?!logout).*$');

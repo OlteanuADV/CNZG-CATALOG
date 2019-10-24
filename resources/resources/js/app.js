@@ -8,11 +8,14 @@ import MyClass from './components/MyClass'
 import AllClasses from './components/AllClasses'
 import MineClasses from './components/MineClasses'
 import Profile from './components/Profile'
+import JQuery from 'jquery'
+
+
 
 Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.use(VueRouter)
 window.axios = require('axios');
-
+//window.$ = JQuery;
 
 //Router
 const router = new VueRouter({

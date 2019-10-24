@@ -7,6 +7,37 @@ use Auth, DB, App\User, Cache, Session, Carbon, App\General, App\Subjects, App\A
 
 class Requests extends Controller
 {
+    public function fetchProfile($id){
+        Cache::forget('showProfile_'.$id);
+        $user                               = User::find($id);
+        if(!$user)
+            return redirect('/')->with('danger','This user doesn`t exists!');
+        $data = Cache::remember('showProfile_'.$id, 1800, function() use ($user){
+            if($user->InSchoolFunction == 1)
+                $user->prof_subject     = Subjects::find($user->Subject)->Name;
+            if($user->Class !== 0)
+            {
+                $data['user']               = $user;
+                $data['class']              = $user->class()->first();
+                $data['diriginte']          = User::where('Class',$user->Class)->where('InSchoolFunction', '1')->first();
+                $data['profesori']          = Classes::getTeachers($user->Class);
+                $data['materii']            = Classes::getSubjects($user->Class);
+                $data['absente']            = $user->absences()->orderBy('AbsenceDate','desc')->get();
+            }
+            else
+            {
+                $data['user']               = $user;
+                $data['class']              = 0;
+                $data['diriginte']          = 0;
+                $data['profesori']          = 0;
+                $data['materii']            = 0;
+                $data['absente']            = 0;
+            }
+            return (object) $data;
+        });
+        return json_encode($data);
+    }
+
     public function fetchMineClasses(){
         if(Auth::user()->InSchoolFunction == 0)
             return redirect('/')->with('danger','Din pacate nu ai acces la aceasta pagina!');
