@@ -20,7 +20,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "laravel-vue-pagination": "^2.3.1",
         "vue": "^2.6.10",
         "vue-router": "^3.1.3"
